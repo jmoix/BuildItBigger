@@ -1,15 +1,18 @@
 package com.udacity.gradle.builditbigger;
 
+import com.example.jasonmoix.jokeactivity.JokeActivity;
 import com.udacity.gradle.builditbigger.tasks.EndpointsAsyncTask;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements EndpointsAsyncTask.TaskToActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +44,15 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view){
+        ((MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment)).startSpinner();
         new EndpointsAsyncTask().execute(this);
     }
 
+    public void jokeFetched(String joke){
+        ((MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment)).stopSpinner();
+        Intent intent = new Intent(this, JokeActivity.class);
+        intent.putExtra(JokeActivity.JOKE_EXTRA, joke);
+        this.startActivity(intent);
+    }
 
 }

@@ -8,6 +8,7 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.example.jasonmoix.jokeactivity.JokeActivity;
 import com.example.jasonmoix.myapplication.backend.myApi.MyApi;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,6 +27,10 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
     private Context context;
     private ResultListener mResultListener;
     private Exception mError;
+
+    public interface TaskToActivity{
+        void jokeFetched(String joke);
+    }
 
     @Override
     protected String doInBackground(Context... params) {
@@ -65,9 +70,7 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         if(mResultListener != null) mResultListener.onComplete(result, mError);
-        Intent intent = new Intent(context, JokeActivity.class);
-        intent.putExtra(JokeActivity.JOKE_EXTRA, result);
-        context.startActivity(intent);
+        ((TaskToActivity)context).jokeFetched(result);
     }
 
     @Override
