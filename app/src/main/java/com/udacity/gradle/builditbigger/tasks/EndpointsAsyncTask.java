@@ -11,6 +11,7 @@ import com.example.jasonmoix.myapplication.backend.myApi.MyApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -21,9 +22,10 @@ import java.io.IOException;
  */
 
 public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
-    private static MyApi
-            myApiService = null;
+    private static MyApi myApiService = null;
     private Context context;
+    private ResultListener mResultListener;
+    private Exception mError;
 
     @Override
     protected String doInBackground(Context... params) {
@@ -43,6 +45,7 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
             // end options for devappserver
 
             myApiService = builder.build();
+
         }
 
         context = params[0];
@@ -54,10 +57,28 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
         }
     }
 
+    public EndpointsAsyncTask setListener(ResultListener resultListener){
+        this.mResultListener = resultListener;
+        return this;
+    }
+
     @Override
     protected void onPostExecute(String result) {
+        if(mResultListener != null) mResultListener.onComplete(result, mError);
         Intent intent = new Intent(context, JokeActivity.class);
         intent.putExtra(JokeActivity.JOKE_EXTRA, result);
         context.startActivity(intent);
+    }
+
+    @Override
+    protected void onCancelled() {
+        if(mResultListener != null) {
+            mError = new InterruptedException("AsyncTask Cancelled");
+            mResultListener.onComplete(null, mError);
+        }
+    }
+
+    public static interface ResultListener{
+        void onComplete(String result, Exception e);
     }
 }
