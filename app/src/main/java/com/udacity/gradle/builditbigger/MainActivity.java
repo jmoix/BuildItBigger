@@ -1,5 +1,9 @@
 package com.udacity.gradle.builditbigger;
 
+import com.example.JokeProvider;
+import com.example.jasonmoix.jokeactivity.JokeActivity;
+
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,10 +14,14 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
+    JokeProvider mJokeProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mJokeProvider = new JokeProvider();
     }
 
 
@@ -40,7 +48,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view){
-        Toast.makeText(this, "derp", Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(this, JokeActivity.class);
+        myIntent.putExtra(JokeActivity.JOKE_EXTRA, mJokeProvider.getJoke());
+        startActivity(myIntent);
     }
 
 
