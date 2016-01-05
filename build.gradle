@@ -18,3 +18,20 @@ allprojects {
     }
 }
 
+//Credit for test task goes to GitHub user alexdennis for helping me figure it out
+
+task startBackend(type: GradleBuild) {
+    dependsOn ":backend:appengineRun"
+    project(":backend").afterEvaluate { backend ->
+        backend.extensions.appengine.daemon = true
+    }
+
+    tasks = [':app:connectedAndroidTest']
+}
+
+task buildItBiggerTest(type: GradleBuild) {
+    dependsOn "startBackend"
+
+    tasks = [":backend:appengineStop"]
+}
+
