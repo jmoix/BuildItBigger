@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="paid_fragment" type="id"/>
+    <item name="free_fragment" type="id"/>
+    <item name="adView" type="id"/>
+</resources>
